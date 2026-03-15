@@ -456,4 +456,43 @@ curl -s http://localhost:8000/api/gamedata/chests | head -1    # 2 chests
 
 ---
 
-<!-- New phases will be appended below this line -->
+## Phase 12 — Rewards
+
+**What was built:** Level rewards section on character detail page. Claim rewards to get immediately openable chests.
+
+### Test: View reward status
+
+1. Go to a character detail page
+2. Scroll to **"Level Rewards"** section
+3. **Expected:** Grid of 10 boxes (Lv.0 through Lv.9)
+4. Lv.0 should be amber with a "Claim" button (every character starts at level 0)
+5. Higher levels show "Locked" (dark, no button)
+
+### Test: Claim a reward
+
+1. Click **"Claim"** on the Lv.0 reward
+2. **Expected:** Green message: "Reward claimed! Chest #X created — open it from the Chests page."
+3. The Lv.0 box changes to gray "Claimed"
+
+### Test: Open reward chest
+
+1. After claiming, go to **Chests** page
+2. **Expected:** A chest with 100% combat percentage and no time lock
+3. Click **"Open Chest"** — guaranteed to contain a drop (100% = no empty check)
+
+### Test: Already claimed
+
+1. Try to claim Lv.0 again
+2. **Expected:** The Claim button is gone (box shows "Claimed")
+
+### Test: Level not reached
+
+1. If character is level 0, rewards Lv.1-9 show "Locked"
+2. **Expected:** No Claim button on locked levels
+
+---
+
+## All Phases Complete!
+
+All 13 phases (0-12) have been implemented. The frontend covers all 34 backend API endpoints.
+Run `npm test` to verify all automated tests pass.

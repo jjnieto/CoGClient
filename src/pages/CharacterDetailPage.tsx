@@ -10,6 +10,7 @@ import { useVitality } from '../hooks/useVitality';
 import { useTimeLock } from '../hooks/useTimeLock';
 import { MAX_VITALITY, formatVitality } from '../lib/vitality';
 import { RarityBadge } from '../components/equipment/RarityBadge';
+import { getRewardStatus, claimReward } from '../services/rewards';
 import { ApiError } from '../services/client';
 import type { Equipment } from '../types/equipment';
 
@@ -163,6 +164,9 @@ export default function CharacterDetailPage() {
 
         {/* Gear */}
         <GearSection character={character} token={token!} isLocked={isLocked} />
+
+        {/* Rewards */}
+        <RewardsSection characterId={character.id} characterLevel={character.level} token={token!} />
       </div>
     </div>
   );
@@ -312,6 +316,89 @@ function GearSection({ character, token, isLocked }: { character: import('../typ
                   </option>
                 ))}
               </select>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function RewardsSection({ characterId, characterLevel, token }: { characterId: number; characterLevel: number; token: string }) {
+  const queryClient = useQueryClient();
+  const [claimMsg, setClaimMsg] = useState<string | null>(null);
+  const [claimError, setClaimError] = useState<string | null>(null);
+  const [claiming, setClaiming] = useState(false);
+
+  const { data: rewardStatus } = useQuery({
+    queryKey: ['rewards', characterId],
+    queryFn: () => getRewardStatus(token, characterId),
+    enabled: !!token,
+  });
+
+  const handleClaim = async (level: number) => {
+    setClaimMsg(null);
+    setClaimError(null);
+    setClaiming(true);
+    try {
+      const res = await claimReward(token, { characterId, level });
+      setClaimMsg(`Reward claimed! Chest #${res.chest.id} created — open it from the Chests page.`);
+      queryClient.invalidateQueries({ queryKey: ['rewards', characterId] });
+      queryClient.invalidateQueries({ queryKey: ['chests'] });
+    } catch (err) {
+      setClaimError(err instanceof ApiError ? err.message : 'Failed to claim');
+    } finally {
+      setClaiming(false);
+    }
+  };
+
+  if (!rewardStatus) return null;
+
+  return (
+    <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 md:col-span-2">
+      <h2 className="font-bold mb-3">Level Rewards</h2>
+
+      {claimMsg && (
+        <div className="bg-green-900/50 border border-green-700 text-green-300 text-sm rounded p-2 mb-3">
+          {claimMsg}
+        </div>
+      )}
+      {claimError && (
+        <div className="bg-red-900/50 border border-red-700 text-red-300 text-sm rounded p-2 mb-3">
+          {claimError}
+        </div>
+      )}
+
+      <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
+        {rewardStatus.claims.map((claimed, level) => {
+          const canClaim = !claimed && characterLevel >= level;
+          const locked = !claimed && characterLevel < level;
+
+          return (
+            <div
+              key={level}
+              className={`text-center rounded p-2 text-xs border ${
+                claimed
+                  ? 'bg-gray-700 border-gray-600 text-gray-500'
+                  : canClaim
+                  ? 'bg-amber-900/30 border-amber-700 text-amber-400'
+                  : 'bg-gray-900 border-gray-700 text-gray-600'
+              }`}
+            >
+              <p className="font-bold">Lv.{level}</p>
+              {claimed ? (
+                <p className="text-xs mt-1">Claimed</p>
+              ) : canClaim ? (
+                <button
+                  onClick={() => handleClaim(level)}
+                  disabled={claiming}
+                  className="mt-1 bg-amber-600 hover:bg-amber-500 disabled:bg-gray-600 text-white text-xs rounded px-1.5 py-0.5 transition-colors"
+                >
+                  Claim
+                </button>
+              ) : locked ? (
+                <p className="text-xs mt-1">Locked</p>
+              ) : null}
             </div>
           );
         })}
