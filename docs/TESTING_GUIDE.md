@@ -134,4 +134,47 @@ curl -s http://localhost:8000/api/gamedata/chests | head -1    # 2 chests
 
 ---
 
+## Phase 4 — Store + Purchases
+
+**What was built:** Store page with catalog browsing and item purchasing.
+
+### Test: Browse the store catalog
+
+1. Log in and navigate to **Store** (click "Store" in the header)
+2. **Expected:** Page shows 5 sections: Characters, Equipment, Potions, Materials, Recipes
+3. Each item shows its name, price in COG, and a Buy button
+
+### Test: Buy a character
+
+1. Make sure you have at least 200 COG (use the Faucet if needed)
+2. Go to the Store page
+3. In the **Characters** section, type a name (e.g., `Ragnar`) in the name input next to "Barbarian"
+4. Click **"Buy"**
+5. **Expected:** Green message: "Purchased! Spent 200 COG. New balance: XXXX"
+6. Header COG balance updates
+
+### Test: Buy without character name
+
+1. In the Characters section, leave the name field empty
+2. Click **"Buy"**
+3. **Expected:** Red error: "Please enter a character name"
+
+### Test: Buy equipment
+
+1. In the **Equipment** section, click **"Buy"** next to "Leather helm" (80 COG)
+2. **Expected:** Green success message, COG deducted
+
+### Test: Buy with insufficient COG
+
+1. If your balance is low, try buying an expensive item
+2. **Expected:** Red error: "Insufficient COG"
+
+### Test: Buy potions/materials with quantity
+
+1. In the **Potions** section, change the Qty field to `3`
+2. Click **"Buy"** next to "Basic health potion"
+3. **Expected:** 150 COG spent (3 x 50), success message shown
+
+---
+
 <!-- New phases will be appended below this line -->
