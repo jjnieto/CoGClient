@@ -104,4 +104,34 @@ Step-by-step manual testing instructions for each implemented feature. Updated a
 
 ---
 
+## Phase 3 — Game Data (static)
+
+**What was built:** Types, service, and hooks for all 8 static game data endpoints. Data is cached forever (fetched once, never re-fetched).
+
+### Test: Verify data loads (automated only)
+
+Game data has no dedicated UI yet — it will be consumed by later phases (Store, Characters, Quests, etc.). For now, verify via automated tests:
+
+```bash
+npm test -- src/__tests__/services/gamedata.test.ts
+npm test -- src/__tests__/hooks/useGameData.test.tsx
+```
+
+### Test: Verify endpoints respond (manual curl)
+
+These endpoints require no auth and should return JSON arrays:
+
+```bash
+curl -s http://localhost:8000/api/gamedata/heroes | head -1   # 4 heroes
+curl -s http://localhost:8000/api/gamedata/enemies | head -1   # 9 enemies
+curl -s http://localhost:8000/api/gamedata/quests | head -1    # 9 quests
+curl -s http://localhost:8000/api/gamedata/equipment | head -1 # 26 equipment
+curl -s http://localhost:8000/api/gamedata/potions | head -1   # 6 potions
+curl -s http://localhost:8000/api/gamedata/materials | head -1 # 27 materials
+curl -s http://localhost:8000/api/gamedata/recipes | head -1   # 11 recipes
+curl -s http://localhost:8000/api/gamedata/chests | head -1    # 2 chests
+```
+
+---
+
 <!-- New phases will be appended below this line -->
