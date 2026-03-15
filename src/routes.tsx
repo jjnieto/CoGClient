@@ -5,6 +5,8 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import StorePage from './pages/StorePage';
+import CharactersPage from './pages/CharactersPage';
+import CharacterDetailPage from './pages/CharacterDetailPage';
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +25,8 @@ export const router = createBrowserRouter([
         children: [
           { path: '/', element: <DashboardPage /> },
           { path: '/store', element: <StorePage /> },
+          { path: '/characters', element: <CharactersPage /> },
+          { path: '/characters/:id', element: <CharacterDetailPage /> },
         ],
       },
     ],

@@ -177,4 +177,42 @@ curl -s http://localhost:8000/api/gamedata/chests | head -1    # 2 chests
 
 ---
 
+## Phase 5 — Characters
+
+**What was built:** Character list page, character detail page with stats, vitality, XP, gear slots, and level-up.
+
+### Test: View character list
+
+1. Make sure you have at least one character (buy one from the Store if needed)
+2. Click **"Characters"** in the header
+3. **Expected:** Grid of character cards showing name, race, level, HP/ATK/DEF/DDG stats, and vitality bar
+
+### Test: Empty character list
+
+1. Register a new account (no characters)
+2. Navigate to `/characters`
+3. **Expected:** "No characters yet. Buy one from the Store" with a link
+
+### Test: Vitality bar updates in real-time
+
+1. On the Characters page, observe a character's vitality bar
+2. If vitality is below 100%, wait a few seconds
+3. **Expected:** The vitality percentage slowly increases (1 point per second)
+
+### Test: View character detail
+
+1. Click on a character card
+2. **Expected:** Full detail page showing:
+   - All 8 stats (HP, ATK, DEF, DDG, MST, SPD, LCK, FTH)
+   - Vitality bar with time format (e.g., "23h 45m 12s")
+   - XP progress bar
+   - 11 gear slots (mostly "Empty" for a new character)
+
+### Test: Time lock indicator
+
+1. If a character was recently used in a quest, its card shows a red "Locked Xs" badge
+2. **Expected:** The countdown decreases every second and disappears when it reaches 0
+
+---
+
 <!-- New phases will be appended below this line -->
