@@ -329,4 +329,39 @@ curl -s http://localhost:8000/api/gamedata/chests | head -1    # 2 chests
 
 ---
 
+## Phase 9 — Inventory
+
+**What was built:** Inventory page with tabbed view (Potions, Materials, Recipes) and vitality potion usage.
+
+### Test: View inventory tabs
+
+1. Buy some items from the Store (potions, materials, recipes)
+2. Click **"Inventory"** in the header
+3. **Expected:** Potions tab shown by default with item names, descriptions, and quantities (e.g., "x3")
+
+### Test: Switch tabs
+
+1. Click **"Materials (N)"** tab
+2. **Expected:** Shows materials with names and quantities
+3. Click **"Recipes (N)"** tab
+4. **Expected:** Shows recipes
+
+### Test: Tab counts
+
+1. **Expected:** Each tab label shows the count of distinct items (e.g., "Potions (2)", "Materials (3)")
+
+### Test: Use vitality potion
+
+1. Buy a Vitality Potion from the Store (if you don't have one)
+2. Go to Inventory, select a character from the dropdown
+3. On the Vitality Potion card, click **"Use on character"**
+4. **Expected:** Success message, potion quantity decreases, character's vitality increases
+
+### Test: Empty inventory
+
+1. With a fresh account (no items)
+2. **Expected:** "No potions." on the potions tab
+
+---
+
 <!-- New phases will be appended below this line -->

@@ -10,6 +10,7 @@ import CharacterDetailPage from './pages/CharacterDetailPage';
 import EquipmentPage from './pages/EquipmentPage';
 import QuestsPage from './pages/QuestsPage';
 import ChestsPage from './pages/ChestsPage';
+import InventoryPage from './pages/InventoryPage';
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +34,7 @@ export const router = createBrowserRouter([
           { path: '/equipment', element: <EquipmentPage /> },
           { path: '/quests', element: <QuestsPage /> },
           { path: '/chests', element: <ChestsPage /> },
+          { path: '/inventory', element: <InventoryPage /> },
         ],
       },
     ],
