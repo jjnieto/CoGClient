@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Chains of Glory Client — Frontend for the Chains of Glory RPG game. Connects to the CoGServer backend API.
+Chains of Glory Client — Frontend for the Chains of Glory RPG game built with Next.js and React. Connects to the CoGServer backend API.
 
 ## Backend API
 
@@ -18,6 +18,15 @@ The backend API documentation is at `E:/CoGServer/docs/`:
 
 **Read these documents before building any feature.** They contain every endpoint, every response format, and every game mechanic.
 
+## Tech Stack
+
+- **Framework:** Next.js 14+ (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **State Management:** Zustand
+- **Testing:** Vitest + React Testing Library
+- **HTTP Client:** Native fetch (wrapped in API service)
+
 ## API Connection
 
 ```
@@ -32,25 +41,73 @@ Errors:   {"error": "message"} with HTTP status codes
 - **4 races** (Barbarian, Rogue, Assassin, Dwarf) with different base stats
 - **8 stats** computed on the fly: HP, ATK, DEF, DDG, MST, SPD, LCK, FTH
 - **Vitality** regenerates at 1pt/sec, max 86400 (24h full recovery)
-- **Integer arithmetic only** — all game math uses integer division
+- **Integer arithmetic only** — all game math uses integer division (Math.trunc)
 - **Token IDs** for frontend: potions = index, materials = 10000+index, recipes = 20000+index
 - **Two combat systems**: classic (auto-resolve via `/quests/play`) and turn-based (interactive via `/combat/*`)
-
-## Mandatory Workflow
-
-Every implementation step **MUST** include:
-
-1. **Tests** — Create tests that cover the implemented functionality
-2. **Documentation** — Update or create relevant documentation
-3. **Verify** — All existing tests must still pass after changes
+- **Equipment rarities**: Common (gray), Rare (green), Epic (cyan), Legendary (purple), Mythic (pink)
+- **11 gear slots**: head, neck, chest, belt, legs, feet, arms, weapon, off-hand, ring, mount
 
 ## Commands
 
-Commands depend on the chosen stack. Update this section once the framework is selected.
+| Action | Command |
+|--------|---------|
+| Install dependencies | `npm install` |
+| Run dev server | `npm run dev` |
+| Run tests | `npm test` |
+| Run single test | `npm test -- --grep "test name"` |
+| Build | `npm run build` |
+| Lint | `npm run lint` |
 
-| Action | Description |
-|--------|-------------|
-| Install dependencies | Install all project dependencies |
-| Run dev server | Start the development server |
-| Run tests | Execute the full test suite |
-| Build | Create production build |
+## Mandatory Workflow — NEVER skip these steps
+
+Every implementation step (page, component, hook, service, etc.) **MUST** include:
+
+1. **Tests** — Create tests that cover: rendering, user interactions, API integration (mocked), error states, and edge cases. Run `npm test` and confirm they pass before moving on.
+2. **Documentation** — Create or update a markdown file in `docs/` with component description, props, usage examples, and screenshots if visual.
+3. **Verify** — All existing tests must still pass after your changes.
+
+This is **not optional**. Do not wait for the user to ask. Do not skip documentation because "it's just a small change." Every piece of code ships with its tests and docs in the same commit.
+
+Use the skills in `.claude/skills/` for templates and conventions:
+- `/new-page` — Full workflow: page + tests + docs
+- `/new-component` — Create component + tests + docs
+- `/new-hook` — Create custom hook + tests + docs
+- `/add-tests` — Add tests to existing code
+- `/add-docs` — Add documentation to existing code
+
+## Code Rules
+
+- All code, tests, and documentation must be written in **English**.
+- Use TypeScript strictly — no `any` types unless absolutely necessary.
+- API responses must be typed with interfaces matching the backend response formats.
+- Use integer arithmetic (Math.trunc for division) when replicating game formulas client-side.
+- Handle all API error states gracefully — show user-friendly messages for 400, 401, 402, 403, 404, 423, 429.
+- Store auth token in localStorage. Clear on logout.
+- Use Zustand stores for global state (auth, inventory, active combat).
+- Components should be small, focused, and reusable.
+
+## Project Structure
+
+```
+src/
+  app/                    # Next.js App Router pages
+    (auth)/               # Login, register (no auth required)
+    (game)/               # Game pages (auth required)
+      characters/         # Character list, detail, equip
+      equipment/          # Equipment list, upgrade
+      inventory/          # Potions, materials, recipes
+      store/              # Store catalog and purchasing
+      quests/             # Quest list and combat
+      crafting/           # Recipe execution
+      chests/             # Chest list and opening
+  components/             # Reusable UI components
+    ui/                   # Base UI (buttons, cards, modals, bars)
+    game/                 # Game-specific (stat display, gear slots, combat UI)
+  hooks/                  # Custom React hooks
+  services/               # API client and service layer
+  stores/                 # Zustand stores
+  types/                  # TypeScript interfaces for API responses
+  lib/                    # Utilities (game math, formatters)
+  __tests__/              # Test files mirror src/ structure
+docs/                     # Component and page documentation
+```
