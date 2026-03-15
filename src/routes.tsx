@@ -1,25 +1,28 @@
 import { createBrowserRouter } from 'react-router-dom';
-
-// Placeholder pages — will be replaced as each phase is implemented
-function Placeholder({ name }: { name: string }) {
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <h1 className="text-2xl font-bold text-gray-400">{name} — Coming Soon</h1>
-    </div>
-  );
-}
+import { ProtectedRoute } from './components/layout/ProtectedRoute';
+import { AppLayout } from './components/layout/AppLayout';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import DashboardPage from './pages/DashboardPage';
 
 export const router = createBrowserRouter([
   {
     path: '/login',
-    element: <Placeholder name="Login" />,
+    element: <LoginPage />,
   },
   {
     path: '/register',
-    element: <Placeholder name="Register" />,
+    element: <RegisterPage />,
   },
   {
-    path: '/',
-    element: <Placeholder name="Dashboard" />,
+    element: <ProtectedRoute />,
+    children: [
+      {
+        element: <AppLayout />,
+        children: [
+          { path: '/', element: <DashboardPage /> },
+        ],
+      },
+    ],
   },
 ]);
