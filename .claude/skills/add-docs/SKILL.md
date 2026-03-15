@@ -6,7 +6,7 @@ argument-hint: "<target> - e.g. StorePage or StatBar"
 
 # Add Documentation Skill
 
-You are generating documentation for existing frontend code. Follow every step.
+You are generating documentation for existing frontend code (React + Vite). Follow every step.
 
 ## Steps
 
@@ -17,7 +17,7 @@ You are generating documentation for existing frontend code. Follow every step.
    - **Props/Parameters** — table with name, type, required, description
    - **Usage example** — code snippet showing how to use it
    - **API endpoints used** — which backend endpoints it calls (for pages/hooks)
-   - **State management** — which stores it reads/writes
+   - **State management** — which stores/queries it reads/writes
    - **Testing** section with:
      - Test file path
      - Command to run tests

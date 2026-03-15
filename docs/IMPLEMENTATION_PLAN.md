@@ -16,9 +16,9 @@ Construir un frontend React funcional para el RPG "Chains of Glory" que conecte 
 | 0.2 | Instalar y configurar Tailwind CSS |
 | 0.3 | Instalar React Router v6, TanStack Query, Zustand |
 | 0.4 | Instalar Vitest + React Testing Library + MSW |
-| 0.5 | Crear `src/api/client.ts` — fetch wrapper con base URL, Bearer token, manejo de errores |
+| 0.5 | Crear `src/services/client.ts` — fetch wrapper con base URL, Bearer token, manejo de errores |
 | 0.6 | Crear layout base: `<App>` con Router, QueryClientProvider, y placeholder de rutas |
-| 0.7 | Actualizar CLAUDE.md sección Commands con los comandos reales |
+| 0.7 | Crear `src/routes.tsx` — definición de rutas con React Router |
 
 **Entregable:** `npm run dev` arranca, `npm test` corre, página en blanco con router funcionando.
 
@@ -31,7 +31,7 @@ Construir un frontend React funcional para el RPG "Chains of Glory" que conecte 
 | Slice | Descripción |
 |-------|-------------|
 | 1.1 | `src/types/auth.ts` — tipos para User, LoginRequest, RegisterRequest, AuthResponse |
-| 1.2 | `src/api/auth.ts` — funciones register(), login(), getMe() |
+| 1.2 | `src/services/auth.ts` — funciones register(), login(), getMe() |
 | 1.3 | `src/stores/authStore.ts` — Zustand store: token en localStorage, user, isAuthenticated, logout |
 | 1.4 | `src/components/layout/ProtectedRoute.tsx` — redirect a /login si no autenticado |
 | 1.5 | `src/pages/RegisterPage.tsx` — formulario: username, email, password → register → redirect a dashboard |
@@ -50,7 +50,7 @@ Construir un frontend React funcional para el RPG "Chains of Glory" que conecte 
 
 | Slice | Descripción |
 |-------|-------------|
-| 2.1 | `src/api/faucet.ts` — función withdraw() |
+| 2.1 | `src/services/faucet.ts` — función withdraw() |
 | 2.2 | Botón "Get Free COG" en el dashboard, muestra estado (X/5 usos, balance actual) |
 | 2.3 | Actualización reactiva del balance en el header tras withdraw |
 | 2.4 | Tests: withdraw funciona, balance se actualiza, máximo 5 usos |
@@ -66,7 +66,7 @@ Construir un frontend React funcional para el RPG "Chains of Glory" que conecte 
 | Slice | Descripción |
 |-------|-------------|
 | 3.1 | `src/types/gamedata.ts` — tipos para Hero, Enemy, Quest, Equipment, Potion, Material, Recipe, Chest |
-| 3.2 | `src/api/gamedata.ts` — 8 funciones (heroes, enemies, quests, equipment, potions, materials, recipes, chests) |
+| 3.2 | `src/services/gamedata.ts` — 8 funciones (heroes, enemies, quests, equipment, potions, materials, recipes, chests) |
 | 3.3 | `src/hooks/useGameData.ts` — queries con staleTime: Infinity (datos que no cambian) |
 | 3.4 | Tests: queries devuelven datos, cache funciona |
 
@@ -81,7 +81,7 @@ Construir un frontend React funcional para el RPG "Chains of Glory" que conecte 
 | Slice | Descripción |
 |-------|-------------|
 | 4.1 | `src/types/store.ts` — tipos para StoreCatalog, PurchaseRequest |
-| 4.2 | `src/api/store.ts` — getCatalog(), purchase() |
+| 4.2 | `src/services/store.ts` — getCatalog(), purchase() |
 | 4.3 | `src/pages/StorePage.tsx` — catálogo agrupado por categoría (characters, equipment, potions, materials, recipes) |
 | 4.4 | Modal/formulario de compra: cantidad, nombre del personaje (si class=0), confirmación de precio |
 | 4.5 | Invalidación de queries tras compra (balance, characters, equipment, items según lo comprado) |
@@ -98,9 +98,9 @@ Construir un frontend React funcional para el RPG "Chains of Glory" que conecte 
 | Slice | Descripción |
 |-------|-------------|
 | 5.1 | `src/types/character.ts` — tipos para Character (con gear[11], stats, vitality, xp, level) |
-| 5.2 | `src/api/characters.ts` — list(), getById(), levelUp(), usePotion() |
-| 5.3 | `src/utils/stats.ts` — funciones de cálculo de stats con Math.trunc() (para preview) |
-| 5.4 | `src/utils/vitality.ts` — computeCurrentVitality(stored, lastUpdate) |
+| 5.2 | `src/services/characters.ts` — list(), getById(), levelUp(), usePotion() |
+| 5.3 | `src/lib/stats.ts` — funciones de cálculo de stats con Math.trunc() (para preview) |
+| 5.4 | `src/lib/vitality.ts` — computeCurrentVitality(stored, lastUpdate) |
 | 5.5 | `src/hooks/useVitality.ts` — hook con setInterval que actualiza vitalidad cada segundo |
 | 5.6 | `src/hooks/useTimeLock.ts` — hook: secondsRemaining, isLocked |
 | 5.7 | `src/pages/CharactersPage.tsx` — lista de personajes: nombre, raza, nivel, HP, ATK, vitalidad (barra), estado lock |
@@ -118,11 +118,11 @@ Construir un frontend React funcional para el RPG "Chains of Glory" que conecte 
 | Slice | Descripción |
 |-------|-------------|
 | 6.1 | `src/types/equipment.ts` — tipos para Equipment (slot, rarity, stats, level, timeLock) |
-| 6.2 | `src/api/equipment.ts` — list(), upgrade() |
+| 6.2 | `src/services/equipment.ts` — list(), upgrade() |
 | 6.3 | `src/components/equipment/RarityBadge.tsx` — color por rareza (colores del GAME_CONCEPTS) |
 | 6.4 | `src/pages/EquipmentPage.tsx` — lista de equipo con stats, rareza, slot, nivel, estado lock |
 | 6.5 | UI de equipar en CharacterDetailPage: 11 slots visuales, seleccionar equipo compatible por slot |
-| 6.6 | `src/api/characters.ts` — equip() (PUT gear array) |
+| 6.6 | `src/services/characters.ts` — equip() (PUT gear array) |
 | 6.7 | Preview de stats al equipar/desequipar (usando utils/stats.ts) |
 | 6.8 | Tests: lista equipo, equipar cambia stats, slot validation, upgrade |
 
@@ -137,7 +137,7 @@ Construir un frontend React funcional para el RPG "Chains of Glory" que conecte 
 | Slice | Descripción |
 |-------|-------------|
 | 7.1 | `src/types/quest.ts` — tipos para Quest (con dropTable, vitalityCost, difficulty levels) |
-| 7.2 | `src/api/quests.ts` — list(), play() |
+| 7.2 | `src/services/quests.ts` — list(), play() |
 | 7.3 | `src/pages/QuestsPage.tsx` — lista de quests: nombre, enemigo, coste de vitalidad, dificultad |
 | 7.4 | Selector de dificultad (0-4) con indicador de multiplicador de enemigo |
 | 7.5 | Selector de personaje y poción (opcional) antes de jugar |
@@ -156,7 +156,7 @@ Construir un frontend React funcional para el RPG "Chains of Glory" que conecte 
 | Slice | Descripción |
 |-------|-------------|
 | 8.1 | `src/types/chest.ts` — tipos para Chest (timeLock, percentage, questIndex) |
-| 8.2 | `src/api/chests.ts` — list(), open() |
+| 8.2 | `src/services/chests.ts` — list(), open() |
 | 8.3 | `src/pages/ChestsPage.tsx` — lista de cofres con countdown de timelock |
 | 8.4 | Abrir cofre: mostrar drops obtenidos (equipo, items, COG) |
 | 8.5 | Invalidación post-open: equipment, items, balance |
@@ -173,7 +173,7 @@ Construir un frontend React funcional para el RPG "Chains of Glory" que conecte 
 | Slice | Descripción |
 |-------|-------------|
 | 9.1 | `src/types/item.ts` — tipos para Potion, Material, Recipe (con tokenId) |
-| 9.2 | `src/api/items.ts` — getInventory() |
+| 9.2 | `src/services/items.ts` — getInventory() |
 | 9.3 | `src/pages/InventoryPage.tsx` — 3 tabs/secciones: pociones, materiales, recetas |
 | 9.4 | Usar poción de vitalidad desde inventario (en personaje seleccionado) |
 | 9.5 | Tests: render inventario, usar poción |
@@ -188,7 +188,7 @@ Construir un frontend React funcional para el RPG "Chains of Glory" que conecte 
 
 | Slice | Descripción |
 |-------|-------------|
-| 10.1 | `src/api/crafting.ts` — craft() |
+| 10.1 | `src/services/crafting.ts` — craft() |
 | 10.2 | `src/pages/CraftingPage.tsx` — lista de recetas que posee el usuario |
 | 10.3 | Detalle de receta: ingredientes requeridos vs disponibles, botón craft habilitado/deshabilitado |
 | 10.4 | Resultado del craft: items consumidos y creados |
@@ -206,7 +206,7 @@ Construir un frontend React funcional para el RPG "Chains of Glory" que conecte 
 | Slice | Descripción |
 |-------|-------------|
 | 11.1 | `src/types/combat.ts` — tipos para CombatState, TurnResult, CombatAction |
-| 11.2 | `src/api/combat.ts` — start(), action(), auto(), status() |
+| 11.2 | `src/services/combat.ts` — start(), action(), auto(), status() |
 | 11.3 | `src/stores/combatStore.ts` — estado del combate activo (player, enemy, round, status, log) |
 | 11.4 | `src/pages/CombatPage.tsx` — arena: barras de HP player/enemy, round counter, action buttons |
 | 11.5 | Barra de acciones: attack_normal, attack_heavy, attack_quick, defend, potion, flee |
@@ -227,7 +227,7 @@ Construir un frontend React funcional para el RPG "Chains of Glory" que conecte 
 
 | Slice | Descripción |
 |-------|-------------|
-| 12.1 | `src/api/rewards.ts` — getStatus(), claim() |
+| 12.1 | `src/services/rewards.ts` — getStatus(), claim() |
 | 12.2 | Sección en CharacterDetailPage: tabla de 10 niveles, cuáles están claimed, botón claim |
 | 12.3 | Claim crea cofre → redirigir a cofres o abrir inline |
 | 12.4 | Tests: ver estado rewards, claim exitoso |

@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Chains of Glory Client — Frontend for the Chains of Glory RPG game built with Next.js and React. Connects to the CoGServer backend API.
+Chains of Glory Client — Frontend for the Chains of Glory RPG game built with React and Vite. Connects to the CoGServer backend API.
 
 ## Backend API
 
@@ -20,11 +20,14 @@ The backend API documentation is at `E:/CoGServer/docs/`:
 
 ## Tech Stack
 
-- **Framework:** Next.js 14+ (App Router)
+- **Build Tool:** Vite
+- **Framework:** React 18
 - **Language:** TypeScript
+- **Routing:** React Router v6
 - **Styling:** Tailwind CSS
-- **State Management:** Zustand
-- **Testing:** Vitest + React Testing Library
+- **Server State:** TanStack Query (React Query) v5
+- **Client State:** Zustand
+- **Testing:** Vitest + React Testing Library + MSW
 - **HTTP Client:** Native fetch (wrapped in API service)
 
 ## API Connection
@@ -56,6 +59,7 @@ Errors:   {"error": "message"} with HTTP status codes
 | Run tests | `npm test` |
 | Run single test | `npm test -- --grep "test name"` |
 | Build | `npm run build` |
+| Preview build | `npm run preview` |
 | Lint | `npm run lint` |
 
 ## Mandatory Workflow — NEVER skip these steps
@@ -83,31 +87,36 @@ Use the skills in `.claude/skills/` for templates and conventions:
 - Use integer arithmetic (Math.trunc for division) when replicating game formulas client-side.
 - Handle all API error states gracefully — show user-friendly messages for 400, 401, 402, 403, 404, 423, 429.
 - Store auth token in localStorage. Clear on logout.
-- Use Zustand stores for global state (auth, inventory, active combat).
+- Use Zustand stores for client-only global state (auth, active combat).
+- Use TanStack Query for all server state (data fetching, caching, mutations).
 - Components should be small, focused, and reusable.
 
 ## Project Structure
 
 ```
 src/
-  app/                    # Next.js App Router pages
-    (auth)/               # Login, register (no auth required)
-    (game)/               # Game pages (auth required)
-      characters/         # Character list, detail, equip
-      equipment/          # Equipment list, upgrade
-      inventory/          # Potions, materials, recipes
-      store/              # Store catalog and purchasing
-      quests/             # Quest list and combat
-      crafting/           # Recipe execution
-      chests/             # Chest list and opening
-  components/             # Reusable UI components
-    ui/                   # Base UI (buttons, cards, modals, bars)
-    game/                 # Game-specific (stat display, gear slots, combat UI)
-  hooks/                  # Custom React hooks
-  services/               # API client and service layer
-  stores/                 # Zustand stores
-  types/                  # TypeScript interfaces for API responses
-  lib/                    # Utilities (game math, formatters)
-  __tests__/              # Test files mirror src/ structure
-docs/                     # Component and page documentation
+  pages/                    # Page components (one per route)
+    LoginPage.tsx
+    RegisterPage.tsx
+    DashboardPage.tsx
+    CharactersPage.tsx
+    CharacterDetailPage.tsx
+    EquipmentPage.tsx
+    StorePage.tsx
+    QuestsPage.tsx
+    CombatPage.tsx
+    InventoryPage.tsx
+    CraftingPage.tsx
+    ChestsPage.tsx
+  components/               # Reusable UI components
+    layout/                 # Header, ProtectedRoute
+    ui/                     # Base UI (buttons, cards, modals, bars)
+    game/                   # Game-specific (stat display, gear slots, combat UI)
+  hooks/                    # Custom React hooks
+  services/                 # API client and service layer
+  stores/                   # Zustand stores
+  types/                    # TypeScript interfaces for API responses
+  lib/                      # Utilities (game math, formatters)
+  __tests__/                # Test files mirror src/ structure
+docs/                       # Component and page documentation
 ```

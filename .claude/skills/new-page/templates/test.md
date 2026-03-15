@@ -6,17 +6,32 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import {PageName}Page from '@/app/(game)/{page-name}/page';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { MemoryRouter } from 'react-router-dom';
+import {PageName}Page from '../../pages/{PageName}Page';
 
 // Mock API service
-vi.mock('@/services/api', () => ({
-  getData: vi.fn(),
+vi.mock('../../services/{resource}', () => ({
+  fetchData: vi.fn(),
 }));
 
 // Mock auth store
-vi.mock('@/stores/authStore', () => ({
-  useAuthStore: () => ({ token: 'test-token', user: { id: 1, username: 'hero1' } }),
+vi.mock('../../stores/authStore', () => ({
+  useAuthStore: vi.fn((selector) => selector({ token: 'test-token', user: { id: 1, username: 'hero1' } })),
 }));
+
+function renderWithProviders(ui: React.ReactElement) {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        {ui}
+      </MemoryRouter>
+    </QueryClientProvider>
+  );
+}
 
 describe('{PageName}Page', () => {
   beforeEach(() => {
@@ -24,13 +39,13 @@ describe('{PageName}Page', () => {
   });
 
   it('renders loading state initially', () => {
-    render(<{PageName}Page />);
+    renderWithProviders(<{PageName}Page />);
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
   });
 
   it('renders data after loading', async () => {
     // Mock successful API response
-    render(<{PageName}Page />);
+    renderWithProviders(<{PageName}Page />);
     await waitFor(() => {
       // expect(screen.getByText('expected content')).toBeInTheDocument();
     });
@@ -38,7 +53,7 @@ describe('{PageName}Page', () => {
 
   it('renders error state on API failure', async () => {
     // Mock API error
-    render(<{PageName}Page />);
+    renderWithProviders(<{PageName}Page />);
     await waitFor(() => {
       expect(screen.getByText(/error/i)).toBeInTheDocument();
     });
@@ -46,7 +61,7 @@ describe('{PageName}Page', () => {
 
   it('renders empty state when no data', async () => {
     // Mock empty response
-    render(<{PageName}Page />);
+    renderWithProviders(<{PageName}Page />);
     await waitFor(() => {
       expect(screen.getByText(/no data/i)).toBeInTheDocument();
     });

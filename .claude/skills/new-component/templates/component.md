@@ -28,3 +28,4 @@ export function {Name}({ value, label, className, onClick }: {Name}Props) {
 - Use Tailwind CSS classes
 - Accept optional `className` for customization
 - Keep logic minimal — compute in hooks/utils, display in components
+- Use relative imports

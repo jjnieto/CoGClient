@@ -6,7 +6,7 @@ argument-hint: "<hook-name> - e.g. useCharacters or useCombat"
 
 # New Hook Skill
 
-You are creating a custom React hook for the Chains of Glory frontend. Follow every step.
+You are creating a custom React hook for the Chains of Glory frontend (React + Vite + TanStack Query). Follow every step.
 
 ## Input
 
@@ -25,13 +25,14 @@ Add interfaces in `src/types/` for the data this hook returns.
 ### 3. Create the hook
 
 - Place in `src/hooks/{hookName}.ts`
+- Use TanStack Query (useQuery/useMutation) for server state
+- Use Zustand stores for client-only state if needed
 - Return typed data, loading state, error state, and action functions
-- Use Zustand stores for persistent state if needed
 - Handle API errors gracefully
 
 ### 4. Create tests
 
-**Mandatory.** Test the hook using `renderHook` from Testing Library.
+**Mandatory.** Test the hook using `renderHook` from Testing Library, wrapped in `QueryClientProvider`.
 
 Cover:
 - **Initial state** — loading true, data null

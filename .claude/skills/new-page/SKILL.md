@@ -6,7 +6,7 @@ argument-hint: "<page-name> - e.g. characters or quest-combat"
 
 # New Page Skill
 
-You are creating a new page for the Chains of Glory frontend (Next.js/TypeScript). Follow every step below in order. Do not skip any step.
+You are creating a new page for the Chains of Glory frontend (React + Vite + React Router). Follow every step below in order. Do not skip any step.
 
 ## Input
 
@@ -34,18 +34,24 @@ Before writing any code, read the relevant backend documentation:
 
 ### 4. Create the page component
 
-- Place in `src/app/(game)/{page-name}/page.tsx` (or `(auth)/` for auth pages)
+- Place in `src/pages/{PageName}Page.tsx`
 - Follow the template in `templates/page.md`
 - Use Tailwind CSS for styling
-- Use Zustand stores for global state
+- Use TanStack Query for data fetching (useQuery / useMutation)
+- Use Zustand stores for client-only global state
 - Handle loading, error, and empty states
 
-### 5. Create sub-components
+### 5. Add route
+
+- Register the route in `src/routes.tsx`
+- Wrap with `<ProtectedRoute>` if the page requires authentication
+
+### 6. Create sub-components
 
 - Break the page into focused, reusable components in `src/components/`
 - Each component should have clear props with TypeScript interfaces
 
-### 6. Create tests
+### 7. Create tests
 
 This step is **mandatory**. Every page must have tests.
 
@@ -60,14 +66,14 @@ This step is **mandatory**. Every page must have tests.
   - **API calls** are made with correct parameters (mocked)
 - Run tests and confirm they pass
 
-### 7. Create documentation
+### 8. Create documentation
 
 This step is **mandatory**. Every page must be documented.
 
 - Create a markdown file in `docs/{page-name}.md`
 - Include: page description, screenshots placeholder, component breakdown, API endpoints used, state management, testing instructions
 
-### 8. Verify
+### 9. Verify
 
 - Run `npm test` to confirm all tests pass
 - Run `npm run build` to confirm no TypeScript errors
@@ -77,5 +83,6 @@ This step is **mandatory**. Every page must be documented.
 - All output (code, tests, docs) must be in **English**
 - Use TypeScript strictly — no `any`
 - Use Tailwind CSS for all styling
+- Use TanStack Query for server state, Zustand for client state
 - Handle all API error states with user-friendly messages
 - Use integer arithmetic (Math.trunc) for any game formula calculations

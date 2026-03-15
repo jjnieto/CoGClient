@@ -6,7 +6,7 @@ argument-hint: "<target> - e.g. CharacterCard or useInventory"
 
 # Add Tests Skill
 
-You are adding tests for existing frontend code. Follow every step.
+You are adding tests for existing frontend code (React + Vite + Vitest). Follow every step.
 
 ## Steps
 
@@ -15,7 +15,7 @@ You are adding tests for existing frontend code. Follow every step.
 3. Create or extend tests covering:
    - **Rendering** — correct output with various props/states
    - **Interactions** — clicks, inputs, form submissions
-   - **API calls** — mocked, verify correct params
+   - **API calls** — mocked with MSW or vi.mock, verify correct params
    - **Error states** — API failures, empty data
    - **Edge cases** — boundary values, null data
 4. Run `npm test` and confirm all pass
@@ -24,6 +24,8 @@ You are adding tests for existing frontend code. Follow every step.
 ## Rules
 
 - Use Vitest + React Testing Library
+- Wrap components in `QueryClientProvider` and `MemoryRouter` when needed
 - Mock API calls and Zustand stores
 - Test behavior, not implementation details
 - All tests in **English**
+- Use relative imports

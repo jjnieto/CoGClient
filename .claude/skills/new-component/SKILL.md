@@ -6,7 +6,7 @@ argument-hint: "<component-name> - e.g. StatBar or GearSlot"
 
 # New Component Skill
 
-You are creating a reusable React component for the Chains of Glory frontend. Follow every step.
+You are creating a reusable React component for the Chains of Glory frontend (React + Vite). Follow every step.
 
 ## Input
 
@@ -18,6 +18,7 @@ The user provides the component name, e.g. `StatBar` or `GearSlot`.
 
 - `src/components/ui/` — Base UI (buttons, cards, modals, progress bars, badges)
 - `src/components/game/` — Game-specific (stat display, gear slots, combat UI, rarity badge)
+- `src/components/layout/` — Layout (header, protected route, sidebar)
 
 ### 2. Create the component
 
@@ -28,7 +29,7 @@ The user provides the component name, e.g. `StatBar` or `GearSlot`.
 
 ### 3. Create tests
 
-**Mandatory.** Create test file alongside or in `src/__tests__/components/`.
+**Mandatory.** Create test file in `src/__tests__/components/`.
 
 Cover:
 - **Renders with required props** — basic render test
@@ -51,3 +52,4 @@ Cover:
 - TypeScript interfaces for all props
 - No inline styles — Tailwind only
 - Components must be self-contained and reusable
+- Use relative imports (e.g., `../ui/Button`)

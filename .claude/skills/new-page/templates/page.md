@@ -3,35 +3,21 @@
 ## Structure
 
 ```tsx
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useAuthStore } from '@/stores/authStore';
+import { useQuery } from '@tanstack/react-query';
+import { useAuthStore } from '../stores/authStore';
+import { fetchData } from '../services/{resource}';
 
 export default function {PageName}Page() {
-  const { token } = useAuthStore();
-  const [data, setData] = useState<{Type} | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const token = useAuthStore((s) => s.token);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setLoading(true);
-        // const result = await apiService.getData(token);
-        // setData(result);
-      } catch (err: any) {
-        setError(err.message || 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, [token]);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['{resource}'],
+    queryFn: () => fetchData(token!),
+  });
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div className="text-red-500">{error}</div>;
-  if (!data) return <div>No data found.</div>;
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div className="text-red-500">{error.message}</div>;
+  if (!data || (Array.isArray(data) && data.length === 0)) return <div>No data found.</div>;
 
   return (
     <div className="container mx-auto p-4">
@@ -45,7 +31,7 @@ export default function {PageName}Page() {
 ## Rules
 
 - Always handle loading, error, and empty states
-- Use `'use client'` directive for pages with state/effects
-- Fetch data in useEffect with proper cleanup
-- Type all state with TypeScript interfaces
+- Use TanStack Query for data fetching (useQuery for reads, useMutation for writes)
+- Type all data with TypeScript interfaces
 - Use Tailwind CSS classes for styling
+- Use relative imports (e.g., `../stores/authStore`)

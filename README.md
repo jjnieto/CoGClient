@@ -1,6 +1,6 @@
 # Chains of Glory Client
 
-Frontend for the Chains of Glory RPG game. Built with Next.js, TypeScript, and Tailwind CSS. Connects to the [CoGServer](https://github.com/jjnieto/CoGServer) backend API.
+Frontend for the Chains of Glory RPG game. Built with React, TypeScript, and Tailwind CSS. Connects to the [CoGServer](https://github.com/jjnieto/CoGServer) backend API.
 
 ## Requirements
 
@@ -19,19 +19,19 @@ cd CoGClient
 npm install
 
 # Create environment file
-cp .env.example .env.local
+cp .env.example .env
 
 # Start the development server
 npm run dev
 ```
 
-The app will be available at `http://localhost:3000`.
+The app will be available at `http://localhost:5173`.
 
 ## Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `NEXT_PUBLIC_API_URL` | `http://localhost:8000/api` | Backend API base URL |
+| `VITE_API_URL` | `http://localhost:8000/api` | Backend API base URL |
 
 ## Testing
 
@@ -52,43 +52,48 @@ npm test -- src/__tests__/components/StatBar.test.tsx
 # Create production build
 npm run build
 
-# Start production server
-npm start
+# Preview production build locally
+npm run preview
 ```
 
 ## Tech Stack
 
 | Technology | Purpose |
 |-----------|---------|
-| Next.js 14+ | Framework (App Router) |
+| Vite | Build tool |
+| React 18 | UI framework |
 | TypeScript | Type safety |
+| React Router v6 | Client-side routing |
 | Tailwind CSS | Styling |
-| Zustand | State management |
+| TanStack Query v5 | Server state (data fetching, caching) |
+| Zustand | Client state management |
 | Vitest | Testing |
 | React Testing Library | Component testing |
+| MSW | API mocking for tests |
 
 ## Project Structure
 
 ```
 src/
-  app/                    # Next.js App Router pages
-    (auth)/               # Login, register (no auth required)
-    (game)/               # Game pages (auth required)
-  components/             # Reusable UI components
-    ui/                   # Base UI (buttons, cards, modals)
-    game/                 # Game-specific (stats, gear, combat)
-  hooks/                  # Custom React hooks
-  services/               # API client layer
-  stores/                 # Zustand stores
-  types/                  # TypeScript interfaces
-  lib/                    # Utilities (game math, formatters)
-docs/                     # Component and page documentation
+  pages/                    # Page components (one per route)
+  components/               # Reusable UI components
+    layout/                 # Header, ProtectedRoute
+    ui/                     # Base UI (buttons, cards, modals)
+    game/                   # Game-specific (stats, gear, combat)
+  hooks/                    # Custom React hooks
+  services/                 # API client layer
+  stores/                   # Zustand stores
+  types/                    # TypeScript interfaces
+  lib/                      # Utilities (game math, formatters)
+  __tests__/                # Test files
+docs/                       # Component and page documentation
 ```
 
 ## Documentation
 
 | Document | Description |
 |----------|-------------|
+| [Implementation Plan](docs/IMPLEMENTATION_PLAN.md) | Phased build plan (13 phases, 87 slices) |
 | [Backend API Reference](https://github.com/jjnieto/CoGServer/blob/main/docs/API_REFERENCE.md) | All 34 API routes |
 | [Game Concepts](https://github.com/jjnieto/CoGServer/blob/main/docs/GAME_CONCEPTS.md) | Races, stats, combat, crafting |
 | [Backend Quickstart](https://github.com/jjnieto/CoGServer/blob/main/docs/QUICKSTART.md) | CURL walkthrough of the full game flow |
