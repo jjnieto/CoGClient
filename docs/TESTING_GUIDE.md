@@ -404,4 +404,56 @@ curl -s http://localhost:8000/api/gamedata/chests | head -1    # 2 chests
 
 ---
 
+## Phase 11 — Turn-Based Combat
+
+**What was built:** Interactive combat page with action selection, HP bars, battle log, auto-combat, and reconnect.
+
+### Test: Start turn-based combat
+
+1. Go to **Quests** page, select a character
+2. Each quest card now has two buttons: **"Auto"** (instant) and **"Turn-Based"** (interactive)
+3. Click **"Turn-Based"** on "Clean the Black Harpy"
+4. **Expected:** Combat page loads showing player and enemy HP bars, round counter, and action buttons
+
+### Test: Attack actions
+
+1. Click **"Attack"** — standard attack
+2. **Expected:** Battle log shows your damage and enemy's counter-attack, HP bars update
+3. Try **"Heavy"** — higher damage but lower defense
+4. Try **"Quick"** — lower damage but higher dodge chance
+
+### Test: Defend
+
+1. Click **"Defend"**
+2. **Expected:** No attack from you, defense doubled, heals 5% max HP. Enemy still attacks.
+
+### Test: Use combat potion
+
+1. If you have combat potions, click **"Use Potion"**
+2. Select a potion from the list
+3. **Expected:** Potion consumed, stat boosted (persists rest of combat), no attack this turn
+
+### Test: Flee
+
+1. Click **"Flee"**
+2. **Expected:** 30%+ chance to escape. If successful: combat ends, no rewards. If failed: enemy hits harder.
+
+### Test: Auto-Combat
+
+1. During an active combat, click **"Auto-Combat (resolve all)"**
+2. **Expected:** All remaining turns resolve instantly, battle log fills up, final result shown
+
+### Test: Victory result
+
+1. Win a combat (enemy HP reaches 0)
+2. **Expected:** Green "Victory!" panel with combat %, XP, level info, chest indicator
+3. Click **"Back to Quests"** to return
+
+### Test: Defeat
+
+1. Fight a hard quest (high difficulty) with a weak character
+2. **Expected:** Red "Defeated!" panel if your HP reaches 0
+
+---
+
 <!-- New phases will be appended below this line -->

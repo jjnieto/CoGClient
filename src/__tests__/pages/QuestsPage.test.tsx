@@ -115,9 +115,9 @@ describe('QuestsPage', () => {
   it('disables play buttons when no character selected', async () => {
     renderPage();
     await waitFor(() => {
-      expect(screen.getAllByRole('button', { name: /play quest/i }).length).toBeGreaterThan(0);
+      expect(screen.getAllByRole('button', { name: /^auto$/i }).length).toBeGreaterThan(0);
     });
-    const buttons = screen.getAllByRole('button', { name: /play quest/i });
+    const buttons = screen.getAllByRole('button', { name: /^auto$/i });
     for (const btn of buttons) {
       expect(btn).toBeDisabled();
     }
@@ -141,7 +141,7 @@ describe('QuestsPage', () => {
     await user.selectOptions(charSelect, '1');
 
     // Play first quest
-    await user.click(screen.getAllByRole('button', { name: /play quest/i })[0]!);
+    await user.click(screen.getAllByRole('button', { name: /^auto$/i })[0]!);
 
     await waitFor(() => {
       expect(screen.getByText('Quest Result')).toBeInTheDocument();
@@ -161,7 +161,7 @@ describe('QuestsPage', () => {
 
     const charSelect = screen.getAllByRole('combobox')[0]!;
     await user.selectOptions(charSelect, '1');
-    await user.click(screen.getAllByRole('button', { name: /play quest/i })[0]!);
+    await user.click(screen.getAllByRole('button', { name: /^auto$/i })[0]!);
 
     await waitFor(() => {
       expect(screen.getByText('Character is locked')).toBeInTheDocument();

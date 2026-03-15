@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { listQuests, playQuest } from '../services/quests';
 import { listCharacters } from '../services/characters';
@@ -14,6 +15,7 @@ const ENEMY_MULT = [100, 300, 600, 1000, 1500];
 export default function QuestsPage() {
   const token = useAuthStore((s) => s.token);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const [selectedCharId, setSelectedCharId] = useState<number>(0);
   const [selectedLevel, setSelectedLevel] = useState(0);
@@ -206,13 +208,22 @@ export default function QuestsPage() {
                   <span>Luck: <span className="text-green-400">{(quest.luck / 100).toFixed(1)}%</span></span>
                 </div>
 
-                <button
-                  onClick={() => handlePlay(quest.index)}
-                  disabled={playing || !selectedCharId}
-                  className="w-full bg-amber-600 hover:bg-amber-500 disabled:bg-gray-600 text-white text-sm font-medium rounded py-1.5 transition-colors"
-                >
-                  {playing ? 'Playing...' : 'Play Quest'}
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handlePlay(quest.index)}
+                    disabled={playing || !selectedCharId}
+                    className="flex-1 bg-amber-600 hover:bg-amber-500 disabled:bg-gray-600 text-white text-sm font-medium rounded py-1.5 transition-colors"
+                  >
+                    {playing ? 'Playing...' : 'Auto'}
+                  </button>
+                  <button
+                    onClick={() => navigate(`/combat?quest=${quest.index}&char=${selectedCharId}&level=${selectedLevel}`)}
+                    disabled={!selectedCharId}
+                    className="flex-1 bg-purple-700 hover:bg-purple-600 disabled:bg-gray-600 text-white text-sm font-medium rounded py-1.5 transition-colors"
+                  >
+                    Turn-Based
+                  </button>
+                </div>
               </div>
             );
           })}
