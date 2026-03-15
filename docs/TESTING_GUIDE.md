@@ -295,4 +295,38 @@ curl -s http://localhost:8000/api/gamedata/chests | head -1    # 2 chests
 
 ---
 
+## Phase 8 — Chests
+
+**What was built:** Chest listing page with time lock countdown and chest opening with loot display.
+
+### Test: View chest list
+
+1. Play a quest to earn a chest (see Phase 7)
+2. Click **"Chests"** in the header
+3. **Expected:** Grid of chest cards showing chest ID, quest info, combat percentage
+
+### Test: Time lock countdown
+
+1. If a chest was just earned, it may have a time lock
+2. **Expected:** Red badge showing countdown (e.g., "5s"), Open button shows "Locked (5s)"
+3. Once countdown reaches 0, the Open button becomes active
+
+### Test: Open a chest with loot
+
+1. Click **"Open Chest"** on an unlocked chest
+2. **Expected:** Gold "Loot Received!" panel showing drops (e.g., "1x Equipment #9")
+3. The chest disappears from the list
+
+### Test: Empty chest
+
+1. Open a chest with low combat percentage (< 100%)
+2. **Expected:** Sometimes shows "Chest was empty! Bad luck." (depends on RNG)
+
+### Test: No chests
+
+1. Open all chests or start with a fresh account
+2. **Expected:** "No chests. Play quests to earn chests!"
+
+---
+
 <!-- New phases will be appended below this line -->
