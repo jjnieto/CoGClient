@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { listCharacters } from '../services/characters';
-import { RACE_NAMES } from '../lib/stats';
+import { RACE_NAMES, xpForNextLevel } from '../lib/stats';
 import { useVitality } from '../hooks/useVitality';
 import { useTimeLock } from '../hooks/useTimeLock';
 import { MAX_VITALITY, formatVitality } from '../lib/vitality';
@@ -50,17 +50,44 @@ function CharacterCard({ character }: { character: Character }) {
         </div>
       </div>
 
-      <div>
-        <div className="flex justify-between text-xs text-gray-400 mb-1">
-          <span>Vitality</span>
-          <span>{formatVitality(vitality)} ({vitalityPercent}%)</span>
+      <div className="space-y-2">
+        <div>
+          <div className="flex justify-between text-xs text-gray-400 mb-1">
+            <span>Vitality</span>
+            <span>{formatVitality(vitality)} ({vitalityPercent}%)</span>
+          </div>
+          <div className="w-full bg-gray-700 rounded-full h-2">
+            <div
+              className="bg-green-500 rounded-full h-2 transition-all"
+              style={{ width: `${vitalityPercent}%` }}
+            />
+          </div>
         </div>
-        <div className="w-full bg-gray-700 rounded-full h-2">
-          <div
-            className="bg-green-500 rounded-full h-2 transition-all"
-            style={{ width: `${vitalityPercent}%` }}
-          />
-        </div>
+
+        {(() => {
+          const xpNeeded = xpForNextLevel(character.level);
+          if (!xpNeeded) return (
+            <div className="flex justify-between text-xs text-gray-400">
+              <span>XP</span>
+              <span className="text-amber-400">MAX LEVEL</span>
+            </div>
+          );
+          const xpPercent = Math.min(100, Math.trunc((character.experience / xpNeeded) * 100));
+          return (
+            <div>
+              <div className="flex justify-between text-xs text-gray-400 mb-1">
+                <span>XP</span>
+                <span>{character.experience} / {xpNeeded} ({xpPercent}%)</span>
+              </div>
+              <div className="w-full bg-gray-700 rounded-full h-2">
+                <div
+                  className="bg-blue-500 rounded-full h-2 transition-all"
+                  style={{ width: `${xpPercent}%` }}
+                />
+              </div>
+            </div>
+          );
+        })()}
       </div>
     </Link>
   );
