@@ -8,6 +8,7 @@ import StorePage from './pages/StorePage';
 import CharactersPage from './pages/CharactersPage';
 import CharacterDetailPage from './pages/CharacterDetailPage';
 import EquipmentPage from './pages/EquipmentPage';
+import QuestsPage from './pages/QuestsPage';
 
 export const router = createBrowserRouter([
   {
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
           { path: '/characters', element: <CharactersPage /> },
           { path: '/characters/:id', element: <CharacterDetailPage /> },
           { path: '/equipment', element: <EquipmentPage /> },
+          { path: '/quests', element: <QuestsPage /> },
         ],
       },
     ],

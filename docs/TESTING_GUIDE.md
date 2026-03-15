@@ -253,4 +253,46 @@ curl -s http://localhost:8000/api/gamedata/chests | head -1    # 2 chests
 
 ---
 
+## Phase 7 — Quests + Classic Combat
+
+**What was built:** Quests page with quest listing, character/difficulty selection, and auto-resolve combat.
+
+### Test: View quest list
+
+1. Click **"Quests"** in the header
+2. **Expected:** Grid of quest cards showing name, description, enemy name, vitality cost, base XP, luck %
+3. "Play Quest" buttons should be **disabled** (no character selected yet)
+
+### Test: Select character and difficulty
+
+1. In the top bar, select a character from the **Character** dropdown
+2. Change the **Difficulty** dropdown (Normal, Hard, Expert, Master, Legendary)
+3. **Expected:** "Play Quest" buttons become enabled after selecting a character
+
+### Test: Play a quest
+
+1. Select a character with enough vitality (e.g., 86400)
+2. Select "Normal" difficulty
+3. Click **"Play Quest"** on "Clean the Black Harpy" (1900 vitality cost)
+4. **Expected:** Result panel appears showing:
+   - Combat percentage (0-100%)
+   - XP earned
+   - Current level (with "UP!" if leveled up)
+   - Lock time in seconds
+   - "Chest obtained!" if lucky
+5. Character is now locked — trying to play again shows "Character is locked"
+
+### Test: Insufficient vitality
+
+1. Play many quests until a character's vitality is low
+2. Try a quest that costs more vitality than available
+3. **Expected:** Error message: "Insufficient vitality"
+
+### Test: Character locked
+
+1. After playing a quest, immediately try to play again with the same character
+2. **Expected:** Error: "Character is locked" (wait for lock timer to expire)
+
+---
+
 <!-- New phases will be appended below this line -->
