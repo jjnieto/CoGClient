@@ -78,4 +78,30 @@ Step-by-step manual testing instructions for each implemented feature. Updated a
 
 ---
 
+## Phase 2 — Faucet + COG Balance
+
+**What was built:** Dev faucet button on Dashboard, COG balance updates reactively in header.
+
+### Test: Get free COG
+
+1. Log in (or register a new account with 0 COG)
+2. On the Dashboard, find the **"Dev Faucet"** card
+3. Click **"Get Free COG"**
+4. **Expected:** A green message appears: "+500 COG received! Total withdrawn: 500/2500"
+5. The header COG balance updates to **500**
+
+### Test: Get COG multiple times
+
+1. Click **"Get Free COG"** 4 more times (5 total)
+2. **Expected:** After each click, the total withdrawn increases (500, 1000, 1500, 2000, 2500)
+3. Header balance should show **2500** after 5 clicks
+
+### Test: Max withdrawal reached
+
+1. After 5 withdrawals, click **"Get Free COG"** again
+2. **Expected:** A red error message appears: "Max withdrawal reached"
+3. Balance stays at **2500**
+
+---
+
 <!-- New phases will be appended below this line -->
