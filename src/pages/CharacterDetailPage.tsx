@@ -2,12 +2,15 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuthStore } from '../stores/authStore';
-import { getCharacter, levelUp } from '../services/characters';
-import { RACE_NAMES, STAT_NAMES, xpForNextLevel } from '../lib/stats';
+import { getCharacter, levelUp, equipGear } from '../services/characters';
+import { listEquipment } from '../services/equipment';
+import { RACE_NAMES, STAT_NAMES, SLOT_NAMES, xpForNextLevel } from '../lib/stats';
 import { useVitality } from '../hooks/useVitality';
 import { useTimeLock } from '../hooks/useTimeLock';
 import { MAX_VITALITY, formatVitality } from '../lib/vitality';
+import { RarityBadge } from '../components/equipment/RarityBadge';
 import { ApiError } from '../services/client';
+import type { Equipment } from '../types/equipment';
 
 export default function CharacterDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -157,26 +160,115 @@ export default function CharacterDetailPage() {
         </div>
 
         {/* Gear */}
-        <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 md:col-span-2">
-          <h2 className="font-bold mb-3">Equipped Gear</h2>
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
-            {['Head', 'Neck', 'Chest', 'Belt', 'Legs', 'Feet', 'Arms', 'Weapon', 'Off-hand', 'Ring', 'Mount'].map((slot, i) => (
-              <div
-                key={i}
-                className="bg-gray-700 border border-gray-600 rounded p-2 text-center text-xs"
-              >
-                <p className="text-gray-500 mb-1">{slot}</p>
-                <p className="font-mono">
-                  {character.gear[i] === 0 ? (
-                    <span className="text-gray-600">Empty</span>
-                  ) : (
-                    <span className="text-amber-400">#{character.gear[i]}</span>
-                  )}
-                </p>
-              </div>
-            ))}
-          </div>
+        <GearSection character={character} token={token!} isLocked={isLocked} />
+      </div>
+    </div>
+  );
+}
+
+function GearSection({ character, token, isLocked }: { character: import('../types/character').Character; token: string; isLocked: boolean }) {
+  const queryClient = useQueryClient();
+  const [equipError, setEquipError] = useState<string | null>(null);
+  const [equipMessage, setEquipMessage] = useState<string | null>(null);
+
+  const { data: allEquipment } = useQuery({
+    queryKey: ['equipment'],
+    queryFn: () => listEquipment(token),
+    enabled: !!token,
+  });
+
+  const equippedMap = new Map<number, Equipment>();
+  if (allEquipment) {
+    for (const eq of allEquipment) {
+      if (character.gear.includes(eq.id)) {
+        equippedMap.set(eq.id, eq);
+      }
+    }
+  }
+
+  const getCompatible = (slotIndex: number): Equipment[] => {
+    if (!allEquipment) return [];
+    return allEquipment.filter((eq) => {
+      if (eq.timeLock > Math.trunc(Date.now() / 1000)) return false;
+      if (eq.equippedIn > 0 && eq.equippedIn !== character.id) return false;
+      return eq.definition.slot === slotIndex || eq.definition.slot === 100;
+    });
+  };
+
+  const handleSlotChange = async (slotIndex: number, equipmentId: number) => {
+    setEquipError(null);
+    setEquipMessage(null);
+    const newGear = [...character.gear];
+    // Remove this equipment from any other slot
+    for (let i = 0; i < newGear.length; i++) {
+      if (newGear[i] === equipmentId && i !== slotIndex) {
+        newGear[i] = 0;
+      }
+    }
+    newGear[slotIndex] = equipmentId;
+
+    try {
+      await equipGear(token, character.id, newGear);
+      setEquipMessage('Gear updated!');
+      queryClient.invalidateQueries({ queryKey: ['characters'] });
+      queryClient.invalidateQueries({ queryKey: ['equipment'] });
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setEquipError(err.message);
+      } else {
+        setEquipError('Failed to equip gear');
+      }
+    }
+  };
+
+  return (
+    <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 md:col-span-2">
+      <h2 className="font-bold mb-3">Equipped Gear</h2>
+
+      {equipMessage && (
+        <div className="bg-green-900/50 border border-green-700 text-green-300 text-sm rounded p-2 mb-3">
+          {equipMessage}
         </div>
+      )}
+      {equipError && (
+        <div className="bg-red-900/50 border border-red-700 text-red-300 text-sm rounded p-2 mb-3">
+          {equipError}
+        </div>
+      )}
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+        {SLOT_NAMES.map((slotName, i) => {
+          const equippedId = character.gear[i] ?? 0;
+          const equipped = equippedId > 0 ? equippedMap.get(equippedId) : undefined;
+          const compatible = getCompatible(i);
+
+          return (
+            <div key={i} className="bg-gray-700 border border-gray-600 rounded p-2 text-xs">
+              <p className="text-gray-500 mb-1 font-medium">{slotName}</p>
+              {equipped ? (
+                <div className="mb-1">
+                  <p className="text-amber-400">{equipped.definition.name}</p>
+                  <RarityBadge rarity={equipped.definition.rarity} className="mt-0.5" />
+                </div>
+              ) : (
+                <p className="text-gray-600 mb-1">Empty</p>
+              )}
+              <select
+                value={equippedId}
+                onChange={(e) => handleSlotChange(i, Number(e.target.value))}
+                disabled={isLocked}
+                className="w-full bg-gray-800 border border-gray-600 rounded px-1 py-0.5 text-xs text-gray-300 focus:outline-none focus:border-amber-500"
+              >
+                <option value={0}>-- None --</option>
+                {compatible.map((eq) => (
+                  <option key={eq.id} value={eq.id}>
+                    {eq.definition.name} (Lv.{eq.level})
+                  </option>
+                ))}
+              </select>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

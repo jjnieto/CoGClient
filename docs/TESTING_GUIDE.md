@@ -215,4 +215,42 @@ curl -s http://localhost:8000/api/gamedata/chests | head -1    # 2 chests
 
 ---
 
+## Phase 6 — Equipment + Equip
+
+**What was built:** Equipment list page, rarity badges, upgrade, and equip UI in character detail.
+
+### Test: View equipment list
+
+1. Buy some equipment from the Store (e.g., Leather helm for 80 COG)
+2. Click **"Equipment"** in the header
+3. **Expected:** Grid of equipment cards showing name, rarity badge (e.g., "Common"), slot, level, and stats
+
+### Test: Rarity colors
+
+1. On the Equipment page, note that:
+   - Common items show gray name and "Common" badge
+   - Rare items (if you have any) show green
+   - Epic items show cyan
+
+### Test: Equip gear on a character
+
+1. Navigate to a character detail page (click a character card from Characters page)
+2. Scroll to the **"Equipped Gear"** section
+3. Each slot has a dropdown. Select an item from the dropdown (e.g., a Wooden Sword in the "Weapon" slot)
+4. **Expected:** Green message "Gear updated!", stats above should change to reflect the equipped item
+
+### Test: Unequip gear
+
+1. In a slot that has an equipped item, change the dropdown to "-- None --"
+2. **Expected:** Gear updated, stats recalculated without that item
+
+### Test: Upgrade equipment
+
+1. Go to the Equipment page
+2. Click **"Upgrade to Lv.1"** on an item
+3. If you have the required materials: **Expected:** Success message, level increases
+4. If not: **Expected:** Error "Insufficient materials"
+
+---
+
 <!-- New phases will be appended below this line -->
