@@ -367,4 +367,41 @@ curl -s http://localhost:8000/api/gamedata/chests | head -1    # 2 chests
 
 ---
 
+## Phase 10 — Crafting
+
+**What was built:** Crafting page accessible from the header menu. Shows owned recipes with ingredients and craft button.
+
+### Test: Navigate to crafting
+
+1. Click **"Crafting"** in the header (new link between Inventory and Chests)
+2. **Expected:** Crafting page loads
+
+### Test: View recipes with ingredients
+
+1. Buy a recipe from the Store (e.g., Bronze Recipe for 100 COG)
+2. Go to Crafting page
+3. **Expected:** Recipe card shows name, description, required ingredients with "have X" quantities
+4. Ingredients you have enough of appear in white, missing ones in red
+
+### Test: Craft an item
+
+1. Make sure you own the recipe AND all required materials
+2. The Craft button should be enabled (amber color)
+3. Click **"Craft"**
+4. **Expected:** Green "Crafted!" panel showing consumed items (red, e.g., "-1x Copper") and created items (green, e.g., "+1x Bronze")
+5. Recipe is consumed (disappears from crafting page)
+
+### Test: Missing materials
+
+1. Own a recipe but not all materials
+2. **Expected:** Craft button shows "Missing materials" and is disabled (gray)
+3. Missing ingredients shown in red
+
+### Test: No recipes
+
+1. With no recipes owned
+2. **Expected:** "No recipes owned. Buy recipes from the Store or earn them from quests."
+
+---
+
 <!-- New phases will be appended below this line -->

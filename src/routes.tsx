@@ -11,6 +11,7 @@ import EquipmentPage from './pages/EquipmentPage';
 import QuestsPage from './pages/QuestsPage';
 import ChestsPage from './pages/ChestsPage';
 import InventoryPage from './pages/InventoryPage';
+import CraftingPage from './pages/CraftingPage';
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +36,7 @@ export const router = createBrowserRouter([
           { path: '/quests', element: <QuestsPage /> },
           { path: '/chests', element: <ChestsPage /> },
           { path: '/inventory', element: <InventoryPage /> },
+          { path: '/crafting', element: <CraftingPage /> },
         ],
       },
     ],

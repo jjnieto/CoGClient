@@ -51,6 +51,9 @@ export function Header() {
           <Link to="/inventory" className="text-gray-300 hover:text-white text-sm">
             Inventory
           </Link>
+          <Link to="/crafting" className="text-gray-300 hover:text-white text-sm">
+            Crafting
+          </Link>
           <Link to="/chests" className="text-gray-300 hover:text-white text-sm">
             Chests
           </Link>
