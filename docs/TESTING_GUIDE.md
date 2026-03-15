@@ -331,31 +331,34 @@ curl -s http://localhost:8000/api/gamedata/chests | head -1    # 2 chests
 
 ## Phase 9 — Inventory
 
-**What was built:** Inventory page with tabbed view (Potions, Materials, Recipes) and vitality potion usage.
+**What was built:** Inventory page (read-only tabbed view), vitality potion on character detail, combat potion selector on quests.
 
 ### Test: View inventory tabs
 
 1. Buy some items from the Store (potions, materials, recipes)
 2. Click **"Inventory"** in the header
 3. **Expected:** Potions tab shown by default with item names, descriptions, and quantities (e.g., "x3")
+4. Info text: "Combat potions are used when playing quests. Vitality potions can be used from the character detail page."
 
 ### Test: Switch tabs
 
-1. Click **"Materials (N)"** tab
-2. **Expected:** Shows materials with names and quantities
-3. Click **"Recipes (N)"** tab
-4. **Expected:** Shows recipes
+1. Click **"Materials (N)"** tab — shows materials with names and quantities
+2. Click **"Recipes (N)"** tab — shows recipes
 
-### Test: Tab counts
+### Test: Use vitality potion (from character detail)
 
-1. **Expected:** Each tab label shows the count of distinct items (e.g., "Potions (2)", "Materials (3)")
+1. Buy a Vitality Potion from the Store
+2. Go to **Characters** > click a character > scroll to the Vitality section
+3. If you own a Vitality Potion, a **"Use Vitality Potion"** button appears
+4. Click it — **Expected:** "Vitality restored!", vitality bar increases
 
-### Test: Use vitality potion
+### Test: Select combat potion before a quest
 
-1. Buy a Vitality Potion from the Store (if you don't have one)
-2. Go to Inventory, select a character from the dropdown
-3. On the Vitality Potion card, click **"Use on character"**
-4. **Expected:** Success message, potion quantity decreases, character's vitality increases
+1. Buy a combat potion (e.g., Basic health potion) from the Store
+2. Go to **Quests** page
+3. In the top bar, next to Character and Difficulty, there's a **"Combat Potion"** dropdown
+4. Select a potion — **Expected:** Shows potion name and quantity (e.g., "Basic health potion (x3)")
+5. Play a quest with the potion selected — the potion is consumed
 
 ### Test: Empty inventory
 

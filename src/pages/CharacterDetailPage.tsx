@@ -2,8 +2,9 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuthStore } from '../stores/authStore';
-import { getCharacter, levelUp, equipGear } from '../services/characters';
+import { getCharacter, levelUp, equipGear, usePotion } from '../services/characters';
 import { listEquipment } from '../services/equipment';
+import { getInventory } from '../services/items';
 import { RACE_NAMES, STAT_NAMES, SLOT_NAMES, xpForNextLevel } from '../lib/stats';
 import { useVitality } from '../hooks/useVitality';
 import { useTimeLock } from '../hooks/useTimeLock';
@@ -124,6 +125,7 @@ export default function CharacterDetailPage() {
                 style={{ width: `${vitalityPercent}%` }}
               />
             </div>
+            <VitalityPotionButton characterId={character.id} token={token!} />
           </div>
 
           <div>
@@ -162,6 +164,50 @@ export default function CharacterDetailPage() {
         {/* Gear */}
         <GearSection character={character} token={token!} isLocked={isLocked} />
       </div>
+    </div>
+  );
+}
+
+function VitalityPotionButton({ characterId, token }: { characterId: number; token: string }) {
+  const queryClient = useQueryClient();
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+
+  const { data: inventory } = useQuery({
+    queryKey: ['items'],
+    queryFn: () => getInventory(token),
+    enabled: !!token,
+  });
+
+  const hasVitalityPotion = inventory?.potions.some((p) => p.index === 5 && p.quantity > 0);
+
+  if (!hasVitalityPotion) return null;
+
+  const handleUse = async () => {
+    setMsg(null);
+    setLoading(true);
+    try {
+      await usePotion(token, characterId, 5);
+      setMsg('Vitality restored!');
+      queryClient.invalidateQueries({ queryKey: ['characters'] });
+      queryClient.invalidateQueries({ queryKey: ['items'] });
+    } catch (err) {
+      setMsg(err instanceof ApiError ? err.message : 'Failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="mt-2">
+      {msg && <p className="text-xs text-green-400 mb-1">{msg}</p>}
+      <button
+        onClick={handleUse}
+        disabled={loading}
+        className="bg-green-700 hover:bg-green-600 disabled:bg-gray-600 text-white text-xs font-medium rounded px-3 py-1 transition-colors"
+      >
+        {loading ? 'Using...' : 'Use Vitality Potion'}
+      </button>
     </div>
   );
 }

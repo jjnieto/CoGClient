@@ -3,7 +3,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '../stores/authStore';
 import { listQuests, playQuest } from '../services/quests';
 import { listCharacters } from '../services/characters';
-import { useEnemies } from '../hooks/useGameData';
+import { getInventory } from '../services/items';
+import { useEnemies, usePotions } from '../hooks/useGameData';
 import { ApiError } from '../services/client';
 import type { PlayQuestResponse } from '../types/quest';
 
@@ -16,6 +17,7 @@ export default function QuestsPage() {
 
   const [selectedCharId, setSelectedCharId] = useState<number>(0);
   const [selectedLevel, setSelectedLevel] = useState(0);
+  const [selectedPotionId, setSelectedPotionId] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [result, setResult] = useState<PlayQuestResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -33,6 +35,24 @@ export default function QuestsPage() {
   });
 
   const { data: enemies } = useEnemies();
+  const { data: potionDefs } = usePotions();
+
+  const { data: inventory } = useQuery({
+    queryKey: ['items'],
+    queryFn: () => getInventory(token!),
+    enabled: !!token,
+  });
+
+  // Combat potions: those with statToBoost[0] != 8 (not vitality) and owned
+  const combatPotions = inventory?.potions
+    .filter((p) => {
+      const def = potionDefs?.find((d) => d.id === p.index);
+      return def && def.statToBoost[0] !== 8 && p.index !== 0;
+    })
+    .map((p) => ({
+      ...p,
+      name: potionDefs?.find((d) => d.id === p.index)?.name ?? `Potion #${p.index}`,
+    })) ?? [];
 
   const handlePlay = async (questIndex: number) => {
     if (!selectedCharId) {
@@ -48,7 +68,7 @@ export default function QuestsPage() {
         questIndex,
         characterId: selectedCharId,
         questLevel: selectedLevel,
-        potionId: 0,
+        potionId: selectedPotionId,
       });
       setResult(res);
       queryClient.invalidateQueries({ queryKey: ['characters'] });
@@ -100,6 +120,22 @@ export default function QuestsPage() {
             {DIFFICULTY_LABELS.map((label, i) => (
               <option key={i} value={i}>
                 {label} ({ENEMY_MULT[i]}%)
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm text-gray-400 mb-1">Combat Potion</label>
+          <select
+            value={selectedPotionId}
+            onChange={(e) => setSelectedPotionId(Number(e.target.value))}
+            className="bg-gray-700 border border-gray-600 rounded px-3 py-1.5 text-sm text-gray-100 focus:outline-none focus:border-amber-500"
+          >
+            <option value={0}>None</option>
+            {combatPotions.map((p) => (
+              <option key={p.index} value={p.index}>
+                {p.name} (x{p.quantity})
               </option>
             ))}
           </select>

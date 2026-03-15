@@ -20,16 +20,27 @@ vi.mock('../../services/characters', () => ({
   listCharacters: vi.fn(),
 }));
 
+vi.mock('../../services/items', () => ({
+  getInventory: vi.fn(),
+}));
+
 vi.mock('../../hooks/useGameData', () => ({
   useEnemies: vi.fn(() => ({
     data: [
       { id: 1, name: 'Rat plague', stats: [5000, 2100, 500] },
     ],
   })),
+  usePotions: vi.fn(() => ({
+    data: [
+      { id: 1, name: 'Basic health potion', statToBoost: [0], boost: [5000] },
+      { id: 5, name: 'Vitality Potion', statToBoost: [8], boost: [25000] },
+    ],
+  })),
 }));
 
 import { listQuests, playQuest } from '../../services/quests';
 import { listCharacters } from '../../services/characters';
+import { getInventory } from '../../services/items';
 
 const mockQuests = [
   {
@@ -73,6 +84,7 @@ describe('QuestsPage', () => {
     vi.clearAllMocks();
     vi.mocked(listQuests).mockResolvedValue(mockQuests);
     vi.mocked(listCharacters).mockResolvedValue(mockChars);
+    vi.mocked(getInventory).mockResolvedValue({ potions: [], materials: [], recipes: [] });
   });
 
   it('renders quest list with names and details', async () => {
